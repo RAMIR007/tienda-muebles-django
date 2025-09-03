@@ -1,0 +1,25 @@
+{% extends 'catalogo/base.html' %}
+
+{% block title %}Catálogo{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Catálogo de Productos</h1>
+<div class="row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ producto.nombre }}</h5>
+                <p class="card-text">{{ producto.descripcion|truncatewords:15 }}</p>
+                <p class="fw-bold">${{ producto.precio }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No hay productos disponibles.</p>
+    {% endfor %}
+</div>
+{% endblock %}
