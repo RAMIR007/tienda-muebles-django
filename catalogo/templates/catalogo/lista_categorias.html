@@ -1,0 +1,17 @@
+{% extends 'catalogo/base.html' %}
+{% block title %}Categorías{% endblock %}
+{% block content %}
+<h1>Categorías</h1>
+{% for bloque in bloques %}
+    <h2>{{ bloque.nombre }}</h2>
+    <ul class="list-group mb-4">
+        {% for categoria in bloque.categorias.all %}
+            <li class="list-group-item">
+                <a href="{% url 'productos_por_categoria' categoria.id %}">{{ categoria.nombre }}</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No hay categorías en este bloque.</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+{% endblock %}

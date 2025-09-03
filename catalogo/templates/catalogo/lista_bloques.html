@@ -1,0 +1,14 @@
+{% extends 'catalogo/base.html' %}
+{% block title %}Bloques{% endblock %}
+{% block content %}
+<h1>Bloques</h1>
+<ul class="list-group">
+    {% for bloque in bloques %}
+        <li class="list-group-item">
+            <a href="{% url 'catalogo_jerarquico' %}?bloque={{ bloque.id }}">{{ bloque.nombre }}</a>
+        </li>
+    {% empty %}
+        <li class="list-group-item text-muted">No hay bloques disponibles.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
