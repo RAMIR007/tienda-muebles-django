@@ -5,30 +5,86 @@
 {% block content %}
 <h1 class="mb-4">Catálogo por Ubicación y Espacio</h1>
 
-{% for cat_raiz in categorias_raiz %}
-  <h2 class="mt-5">{{ cat_raiz.nombre }}</h2>
-  <hr>
-  
-  {% for subcat in cat_raiz.subcategorias.all %}
-    <h4 class="mt-4">{{ subcat.nombre }}</h4>
+{% for bloque_data in estructura %}
+  <!-- Bloque principal -->
+  <section class="mb-5">
+    <h2 class="mb-3">{{ bloque_data.bloque.nombre }}</h2>
+    {% if bloque_data.bloque.descripcion %}
+      <p class="text-muted">{{ bloque_data.bloque.descripcion }}</p>
+    {% endif %}
+    <hr>
+
+    <!-- Lista de subcategorías -->
+    {% if bloque_data.subcategorias %}
+      <div class="mb-3">
+        <strong>Subcategorías:</strong>
+        <ul class="list-inline">
+          {% for sub in bloque_data.subcategorias %}
+            <li class="list-inline-item">
+              <a href="{% url 'productos_por_categoria' sub.id %}" class="btn btn-outline-secondary btn-sm">
+                {{ sub.nombre }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <!-- Productos -->
     <div class="row">
-      {% for producto in subcat.productos.all %}
-        <div class="col-md-4 mb-4">
-          <div class="card h-100">
+      {% for producto in bloque_data.productos %}
+        <div class="col-md-4 col-lg-3 mb-4">
+          <div class="card h-100 shadow-sm">
             {% if producto.imagen %}
-              <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+              <img src="{{ producto.imagen.url }}" 
+                   class="card-img-top" 
+                   alt="Imagen de {{ producto.nombre }}">
+            {% else %}
+              <img src="{% static 'img/placeholder.png' %}" 
+                   class="card-img-top" 
+                   alt="Imagen no disponible">
             {% endif %}
-            <div class="card-body">
+            <div class="card-body d-flex flex-column">
               <h5 class="card-title">{{ producto.nombre }}</h5>
-              <p class="card-text">{{ producto.descripcion|truncatewords:15 }}</p>
-              <p class="fw-bold">${{ producto.precio }}</p>
+              <p class="card-text text-muted small">{{ producto.descripcion|truncatewords:15 }}</p>
+              <p class="fw-bold mt-auto">${{ producto.precio }}</p>
+              <a href="#" class="btn btn-primary btn-sm mt-2" aria-label="Ver detalles de {{ producto.nombre }}">
+                Ver detalles
+              </a>
             </div>
           </div>
         </div>
       {% empty %}
-        <p class="text-muted">No hay productos en esta sección.</p>
+        <p class="text-muted">No hay productos disponibles en este bloque.</p>
       {% endfor %}
     </div>
-  {% endfor %}
+
+    <!-- Paginación (si la implementamos en la vista) -->
+    {% if bloque_data.page_obj %}
+      <nav aria-label="Paginación de {{ bloque_data.bloque.nombre }}">
+        <ul class="pagination justify-content-center">
+          {% if bloque_data.page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?{{ bloque_data.page_param }}={{ bloque_data.page_obj.previous_page_number }}" aria-label="Anterior">
+                &laquo;
+              </a>
+            </li>
+          {% endif %}
+          {% for num in bloque_data.page_obj.paginator.page_range %}
+            <li class="page-item {% if bloque_data.page_obj.number == num %}active{% endif %}">
+              <a class="page-link" href="?{{ bloque_data.page_param }}={{ num }}">{{ num }}</a>
+            </li>
+          {% endfor %}
+          {% if bloque_data.page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?{{ bloque_data.page_param }}={{ bloque_data.page_obj.next_page_number }}" aria-label="Siguiente">
+                &raquo;
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  </section>
 {% endfor %}
 {% endblock %}
