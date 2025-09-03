@@ -1,0 +1,8 @@
+{% for cat in categorias_raiz %}
+  <h2>{{ cat.nombre }}</h2>
+  <ul>
+    {% for sub in cat.subcategorias.all %}
+      <li>{{ sub.nombre }}</li>
+    {% endfor %}
+  </ul>
+{% endfor %}
