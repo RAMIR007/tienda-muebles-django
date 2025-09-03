@@ -1,0 +1,34 @@
+{% extends 'catalogo/base.html' %}
+
+{% block title %}Catálogo Jerárquico{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Catálogo por Ubicación y Espacio</h1>
+
+{% for cat_raiz in categorias_raiz %}
+  <h2 class="mt-5">{{ cat_raiz.nombre }}</h2>
+  <hr>
+  
+  {% for subcat in cat_raiz.subcategorias.all %}
+    <h4 class="mt-4">{{ subcat.nombre }}</h4>
+    <div class="row">
+      {% for producto in subcat.productos.all %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            {% if producto.imagen %}
+              <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ producto.nombre }}</h5>
+              <p class="card-text">{{ producto.descripcion|truncatewords:15 }}</p>
+              <p class="fw-bold">${{ producto.precio }}</p>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted">No hay productos en esta sección.</p>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endfor %}
+{% endblock %}
