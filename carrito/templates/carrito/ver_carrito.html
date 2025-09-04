@@ -1,0 +1,14 @@
+<h1>Tu carrito</h1>
+{% if carrito.items.all %}
+<ul>
+    {% for item in carrito.items.all %}
+        <li>
+            {{ item.producto.nombre }} - {{ item.cantidad }} x {{ item.producto.precio }} = {{ item.subtotal }}
+            <a href="{% url 'eliminar_item' item.id %}">Eliminar</a>
+        </li>
+    {% endfor %}
+</ul>
+<p>Total: {{ carrito.total }}</p>
+{% else %}
+<p>Tu carrito está vacío.</p>
+{% endif %}
